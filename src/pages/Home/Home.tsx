@@ -36,7 +36,7 @@ const Home = () => {
           (!walletKey ? (
             <Button
               variant="contained"
-              sx={{ display: 'block', margin: 'auto' }}
+              sx={{ display: 'block', margin: 'auto', fontWeight: 700 }}
               onClick={handleConnectWallet}
             >
               Connect to Phantom Wallet
@@ -45,7 +45,7 @@ const Home = () => {
             <Button
               variant="contained"
               color="warning"
-              sx={{ display: 'block', margin: 'auto' }}
+              sx={{ display: 'block', margin: 'auto', fontWeight: 700 }}
               onClick={handleDisconnectWallet}
             >
               Disconnect Wallet

@@ -8,16 +8,16 @@ import Routes from 'Routes';
 import { connectWallet } from 'services/phantom/provider';
 
 const App = () => {
-  const { provider, walletKey } = useWallet();
+  const { provider } = useWallet();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (provider && !walletKey) {
+    if (provider && localStorage.getItem('walletKey')) {
       connectWallet().then((key) => {
         dispatch(setWalletKey(key));
       });
     }
-  }, [dispatch, provider, walletKey]);
+  }, [dispatch, provider]);
 
   return (
     <BrowserRouter>

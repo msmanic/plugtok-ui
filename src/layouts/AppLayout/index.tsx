@@ -14,7 +14,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
 import { blue } from '@mui/material/colors';
 
@@ -130,11 +129,7 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
           </IconButton>
           <Box
             sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}
-          >
-            <Button variant="contained" sx={{ fontWeight: 600 }}>
-              Connect
-            </Button>
-          </Box>
+          ></Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
