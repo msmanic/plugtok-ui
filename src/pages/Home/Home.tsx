@@ -1,27 +1,14 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { setWalletKey } from 'redux/modules/common';
-import { connectWallet, disconnectWallet } from 'services/phantom/provider';
-import { useAppDispatch } from 'redux/hooks';
+import { selectDiscordUser } from 'redux/modules/common';
+import { useAppSelector } from 'redux/hooks';
 import { useWallet } from 'hooks/useWallet';
 
 const Home = () => {
-  const dispatch = useAppDispatch();
   const { provider, walletKey } = useWallet();
-
-  const handleConnectWallet = async () => {
-    const walletKey = await connectWallet();
-    dispatch(setWalletKey(walletKey));
-  };
-
-  const handleDisconnectWallet = async () => {
-    if (walletKey) {
-      const disconnected = await disconnectWallet();
-      if (disconnected) dispatch(setWalletKey(undefined));
-    }
-  };
+  const user = useAppSelector(selectDiscordUser);
 
   return (
     <Box sx={{ px: 3, py: 6 }}>
@@ -31,35 +18,35 @@ const Home = () => {
       <Typography variant="body1" align="center" color="grey.700">
         Welcome to PlugTok
       </Typography>
-      <Box sx={{ mt: 2 }}>
+      <Stack spacing={2} alignItems="center" sx={{ mt: 8 }}>
         {provider &&
           (!walletKey ? (
-            <Button
-              variant="contained"
-              sx={{ display: 'block', margin: 'auto', fontWeight: 700 }}
-              onClick={handleConnectWallet}
-            >
-              Connect to Phantom Wallet
-            </Button>
+            <Typography variant="h6" align="center">
+              Wallet not connected
+            </Typography>
           ) : (
-            <Button
-              variant="contained"
-              color="warning"
-              sx={{ display: 'block', margin: 'auto', fontWeight: 700 }}
-              onClick={handleDisconnectWallet}
-            >
-              Disconnect Wallet
-            </Button>
+            <Typography variant="h6" align="center">
+              Wallet: <strong>{walletKey.toString()}</strong>
+            </Typography>
           ))}
+        {user ? (
+          <Typography variant="h6" align="center">
+            Discord username: <strong>{user.username}</strong>
+          </Typography>
+        ) : (
+          <Typography variant="h6" align="center">
+            User not authenticated
+          </Typography>
+        )}
         {!provider && (
-          <Typography variant="h6">
+          <Typography variant="h6" align="center">
             No provider found. Install{' '}
             <Link href="https://phantom.app/" target="_blank">
               Phantom Browser extension
             </Link>
           </Typography>
         )}
-      </Box>
+      </Stack>
     </Box>
   );
 };

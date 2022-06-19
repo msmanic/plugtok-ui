@@ -1,6 +1,10 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, MouseEvent, ReactNode, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,13 +13,29 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import HomeIcon from '@mui/icons-material/Home';
 import { blue } from '@mui/material/colors';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import {
+  selectDiscordSession,
+  selectDiscordUser,
+  selectWalletKey,
+  setDiscordSession,
+  setDiscordUser,
+  setWalletKey,
+} from 'redux/modules/common';
+import { connectWallet, disconnectWallet } from 'services/phantom/provider';
+import { oauth as discordOAuth } from 'services/discord/auth';
+import { discordAuthorizationLink, discordCredentials } from 'config';
+import { EMPTY_DISCORD_SESSION } from 'config/constants';
 
 const drawerWidth = 240;
 
@@ -101,13 +121,65 @@ interface AppLayoutProps {
 }
 
 const AppLayout: FC<AppLayoutProps> = ({ children }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector(selectDiscordUser);
+  const session = useAppSelector(selectDiscordSession);
+  const walletKey = useAppSelector(selectWalletKey);
+  const shortendWalletKey = useMemo(
+    () =>
+      walletKey
+        ? `${walletKey.toString().slice(0, 4)}...${walletKey
+            .toString()
+            .slice(-4)}`
+        : walletKey,
+    [walletKey]
+  );
   const [open, setOpen] = useState(false);
+  const [userMenuEl, setUserMenuEl] = useState<null | HTMLElement>(null);
+  const [walletMenuEl, setWalletMenuEl] = useState<null | HTMLElement>(null);
 
   const handleDrawerToggle = () => {
     if (open) {
       setOpen(false);
     } else {
       setOpen(true);
+    }
+  };
+
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
+    setUserMenuEl(event.currentTarget);
+  };
+
+  const handleNavigateToProfile = () => {
+    navigate('/');
+  };
+
+  const handleSignOut = () => {
+    setUserMenuEl(null);
+
+    discordOAuth
+      .revokeToken(session.access_token, discordCredentials)
+      .then(() => {
+        dispatch(setDiscordSession(EMPTY_DISCORD_SESSION));
+        dispatch(setDiscordUser(null));
+      });
+  };
+
+  const handleOpenWalletMenu = (event: MouseEvent<HTMLElement>) => {
+    setWalletMenuEl(event.currentTarget);
+  };
+
+  const handleConnectWallet = async () => {
+    const walletKey = await connectWallet();
+    dispatch(setWalletKey(walletKey));
+  };
+
+  const handleDisconnectWallet = async () => {
+    setWalletMenuEl(null);
+    if (walletKey) {
+      const disconnected = await disconnectWallet();
+      if (disconnected) dispatch(setWalletKey(undefined));
     }
   };
 
@@ -128,8 +200,87 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
             <MenuIcon />
           </IconButton>
           <Box
-            sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}
-          ></Box>
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            {walletKey ? (
+              <Chip
+                color="primary"
+                component={Button}
+                label={`Wallet (${shortendWalletKey})`}
+                sx={{ borderRadius: 1 }}
+                onClick={handleOpenWalletMenu}
+              />
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ fontWeight: 700 }}
+                onClick={handleConnectWallet}
+              >
+                Connect Wallet
+              </Button>
+            )}
+            {user ? (
+              <Button
+                aria-haspopup="true"
+                onClick={handleOpenUserMenu}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'white',
+                  textTransform: 'inherit',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                  },
+                }}
+              >
+                {user && user.avatar ? (
+                  <Avatar
+                    sx={{ width: 32, height: 32 }}
+                    src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`}
+                  />
+                ) : (
+                  <Avatar sx={{ width: 32, height: 32 }}>
+                    {user.username.slice(0, 1).toUpperCase()}
+                  </Avatar>
+                )}
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {user.username}
+                </Typography>
+                <ArrowDropDownIcon />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                href={discordAuthorizationLink}
+                sx={{ width: '240px', fontWeight: 700 }}
+              >
+                Sign in with Discord
+              </Button>
+            )}
+          </Box>
+          <Menu
+            anchorEl={userMenuEl}
+            open={Boolean(userMenuEl)}
+            onClose={() => setUserMenuEl(null)}
+          >
+            <MenuItem onClick={handleNavigateToProfile}>Profile</MenuItem>
+            <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+          </Menu>
+          <Menu
+            anchorEl={walletMenuEl}
+            open={Boolean(walletMenuEl)}
+            onClose={() => setWalletMenuEl(null)}
+          >
+            <MenuItem onClick={handleDisconnectWallet}>
+              Disconnect wallet
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
