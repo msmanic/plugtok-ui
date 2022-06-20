@@ -15,6 +15,7 @@ import { connectWallet } from 'services/phantom/provider';
 import { oauth as discordOAuth } from 'services/discord/auth';
 import { DiscordSession } from 'models/common';
 import { EMPTY_DISCORD_SESSION } from 'config/constants';
+import { discordRedirectURI } from 'config';
 
 const App = () => {
   const { provider } = useWallet();
@@ -27,7 +28,7 @@ const App = () => {
         code,
         scope: ['identify', 'guilds'],
         grantType: 'authorization_code',
-        redirectUri: process.env.REACT_APP_DISCORD_REDIRECT_URI,
+        redirectUri: discordRedirectURI,
       })
       .then((data: DiscordSession) => {
         dispatch(setDiscordSession(data));
