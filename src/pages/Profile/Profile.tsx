@@ -6,7 +6,7 @@ import { selectDiscordUser } from 'redux/modules/common';
 import { useAppSelector } from 'redux/hooks';
 import { useWallet } from 'hooks/useWallet';
 
-const Home = () => {
+const Profile = () => {
   const { provider, walletKey } = useWallet();
   const user = useAppSelector(selectDiscordUser);
 
@@ -51,4 +51,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Profile;

@@ -21,7 +21,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -310,9 +310,9 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
                   justifyContent: 'center',
                 }}
               >
-                <HomeIcon />
+                <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Profile" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

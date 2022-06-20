@@ -27,7 +27,7 @@ const App = () => {
         code,
         scope: ['identify', 'guilds'],
         grantType: 'authorization_code',
-        redirectUri: 'http://localhost:3000/',
+        redirectUri: process.env.REACT_APP_DISCORD_REDIRECT_URI,
       })
       .then((data: DiscordSession) => {
         dispatch(setDiscordSession(data));
