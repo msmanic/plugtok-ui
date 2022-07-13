@@ -1,5 +1,5 @@
 export const discordRedirectURI = window.location.href.includes('localhost')
-  ? 'https://localhost:3000'
+  ? 'http://localhost:3000/'
   : process.env.REACT_APP_DISCORD_REDIRECT_URI;
 
 export const discordAuthorizationLink = `https://discord.com/api/oauth2/authorize?client_id=${encodeURIComponent(
