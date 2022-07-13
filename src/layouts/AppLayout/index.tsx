@@ -21,6 +21,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
@@ -120,6 +121,47 @@ interface AppLayoutProps {
   children: ReactNode;
 }
 
+const NavItem = ({
+  label,
+  to,
+  open,
+  icon,
+}: {
+  label: string;
+  to: string;
+  open: boolean;
+  icon: React.ReactNode;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <ListItem
+      disablePadding
+      sx={{ display: 'block' }}
+      onClick={() => navigate(to)}
+    >
+      <ListItemButton
+        sx={{
+          minHeight: 48,
+          justifyContent: open ? 'initial' : 'center',
+          px: 2.5,
+        }}
+      >
+        <ListItemIcon
+          sx={{
+            minWidth: 0,
+            mr: open ? 3 : 'auto',
+            justifyContent: 'center',
+          }}
+        >
+          {icon}
+        </ListItemIcon>
+        <ListItemText primary={label} sx={{ opacity: open ? 1 : 0 }} />
+      </ListItemButton>
+    </ListItem>
+  );
+};
+
 const AppLayout: FC<AppLayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -152,7 +194,7 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
   };
 
   const handleNavigateToProfile = () => {
-    navigate('/');
+    navigate('/profile');
   };
 
   const handleSignOut = () => {
@@ -258,7 +300,7 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
               <Button
                 variant="contained"
                 href={discordAuthorizationLink}
-                sx={{ width: '240px', fontWeight: 700 }}
+                sx={{ fontWeight: 700 }}
               >
                 Sign in with Discord
               </Button>
@@ -295,29 +337,16 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
         </Box>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="Profile" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
+          <NavItem label="Home" to="/" icon={<HomeIcon />} open={open} />
+          <NavItem
+            label="Profile"
+            to="/profile"
+            icon={<PersonIcon />}
+            open={open}
+          />
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader />
         {children}
       </Box>
