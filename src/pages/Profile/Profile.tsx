@@ -7,10 +7,8 @@ import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 import { selectDiscordUser } from 'redux/modules/common';
 import { useAppSelector } from 'redux/hooks';
-import { useWallet } from 'hooks/useWallet';
 
 const Profile = () => {
-  const { provider, walletKey } = useWallet();
   const user = useAppSelector(selectDiscordUser);
 
   return (
@@ -40,9 +38,14 @@ const Profile = () => {
                 left: '-180px',
                 top: '-75px',
               }}
+              src={
+                user?.avatar
+                  ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                  : ''
+              }
             />
             <Stack>
-              <Typography variant="h5">Moon Sphere</Typography>
+              <Typography variant="h5">{user?.username}</Typography>
               <Typography variant="body1" color="gray.800">
                 Communication
               </Typography>
@@ -65,14 +68,18 @@ const Profile = () => {
             </Typography>
           </Box>
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Alex is a senior full stack developer with 7+ years of experience in
-            modern technologies. Since starting the career as a developer, he's
-            architected and built 10+ user-facing web applications. Specialized
-            in front end development and his expertise includes React/Redux,
-            TypeScript and Vue, but also great at taking responsibilities of
-            full stack part. Recently, became interested in blockchain and
-            participated in developing smart contracts, minting NFTs, building
-            marketplaces and so on.
+            Fusce commodo velit leo, a pharetra erat rhoncus quis. Curabitur eu
+            blandit ipsum, a tincidunt leo. Mauris vestibulum, arcu eu dictum
+            imperdiet, nulla tellus volutpat dui, ut egestas sem velit sed diam.
+            Vivamus et ullamcorper ipsum. Nam nec quam varius, cursus lectus ut,
+            sagittis neque. Morbi nec sagittis leo, tempor suscipit tortor. Cras
+            vitae pellentesque nisl. Fusce ac gravida lacus, ut cursus libero.
+            Nulla non pharetra nunc. Cras vitae massa nisi. Integer eu pretium
+            libero, id efficitur nisi. Vivamus commodo nisi eu massa elementum,
+            eu finibus tortor fringilla. Quisque interdum euismod leo sed
+            fringilla. Pellentesque convallis, arcu sed mollis malesuada, sapien
+            justo aliquet magna, quis vestibulum erat sapien condimentum elit.
+            Morbi iaculis interdum tellus sed ornare.
           </Typography>
         </Container>
       </Box>

@@ -19,6 +19,7 @@
     "@types/react": "^18.0.6",
     "@types/react-dom": "^18.0.2",
     "assert": "^2.0.0",
+    "axios": "^0.27.2",
     "browserify-zlib": "^0.2.0",
     "discord-oauth2": "^2.10.0",
     "http": "^0.0.1-security",

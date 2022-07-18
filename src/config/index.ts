@@ -6,7 +6,7 @@ export const discordAuthorizationLink = `https://discord.com/api/oauth2/authoriz
   process.env.REACT_APP_DISCORD_CLIENT_ID || ''
 )}&redirect_uri=${encodeURIComponent(
   discordRedirectURI || ''
-)}&response_type=code&scope=identify%20guilds`;
+)}&response_type=code&scope=email%20identify`;
 
 export const discordCredentials = Buffer.from(
   `${process.env.REACT_APP_DISCORD_CLIENT_ID}:${process.env.REACT_APP_DISCORD_CLIENT_SECRET}`

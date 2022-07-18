@@ -22,34 +22,34 @@ const App = () => {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const discordSession = useAppSelector(selectDiscordSession);
+  const discordTokenRequestFromCode = _.debounce((code) => {
+    discordOAuth
+      .tokenRequest({
+        code,
+        scope: ['email', 'identify'],
+        grantType: 'authorization_code',
+        redirectUri: discordRedirectURI,
+      })
+      .then((data: DiscordSession) => {
+        dispatch(setDiscordSession(data));
+      })
+      .catch(() => {
+        dispatch(setDiscordSession(EMPTY_DISCORD_SESSION));
+      });
+  }, 1000);
+  const discordTokenRequestFromRefreshToken = _.debounce((token) => {
+    discordOAuth
+      .tokenRequest({
+        refreshToken: token,
+        grantType: 'refresh_token',
+        scope: ['email', 'identify'],
+      })
+      .then((data: DiscordSession) => {
+        dispatch(setDiscordSession(data));
+      });
+  }, 1000);
 
   useEffect(() => {
-    const discordTokenRequestFromCode = _.debounce((code) => {
-      discordOAuth
-        .tokenRequest({
-          code,
-          scope: ['identify', 'guilds'],
-          grantType: 'authorization_code',
-          redirectUri: discordRedirectURI,
-        })
-        .then((data: DiscordSession) => {
-          dispatch(setDiscordSession(data));
-        })
-        .catch(() => {
-          dispatch(setDiscordSession(EMPTY_DISCORD_SESSION));
-        });
-    }, 1000);
-    const discordTokenRequestFromRefreshToken = _.debounce((token) => {
-      discordOAuth
-        .tokenRequest({
-          refreshToken: token,
-          grantType: 'refresh_token',
-          scope: ['identify', 'guilds'],
-        })
-        .then((data: DiscordSession) => {
-          dispatch(setDiscordSession(data));
-        });
-    }, 1000);
     const info = localStorage.getItem('discord'),
       queryCode = searchParams.get('code');
     let refreshToken = '',
@@ -65,6 +65,7 @@ const App = () => {
     } else if (queryCode && accessToken === '') {
       discordTokenRequestFromCode(queryCode);
     }
+    // eslint-disable-next-line
   }, [searchParams, dispatch]);
 
   useEffect(() => {

@@ -9,30 +9,31 @@ const Home = () => {
   const { provider } = useWallet();
 
   return (
-    // <Box sx={{ px: 3, py: 6 }}>
-    <Box sx={{ px: 20, py: 5 }}>
+    <Box sx={{ px: 20, py: 5, overflow: 'hidden' }}>
       <Grid container>
         <Grid item md={6}>
-          <Typography variant="h3" sx={{ color: 'gray.700', mt: 10 }}>
-            Welcome to
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{ color: 'primary.main', fontWeight: 700 }}
-          >
-            Plug Tok
-          </Typography>
-          <Typography variant="h5" sx={{ mt: 2 }}>
-            At vero eos et accusamus et iusto odio dignissimos ducimus qui
-            blanditiis praesentium voluptatum deleniti atque corrupti quos
-            dolores et quas molestias excepturi sint occaecati cupiditate non
-            provident
-          </Typography>
+          <Box sx={{pr: {md: 3}}}>
+            <Typography variant="h3" sx={{ color: 'gray.700', mt: 10 }}>
+              Welcome to
+            </Typography>
+            <Typography
+              variant="h2"
+              sx={{ color: 'primary.main', fontWeight: 700 }}
+            >
+              Plug Tok
+            </Typography>
+            <Typography variant="h5" sx={{ mt: 2 }}>
+              At vero eos et accusamus et iusto odio dignissimos ducimus qui
+              blanditiis praesentium voluptatum deleniti atque corrupti quos
+              dolores et quas molestias excepturi sint occaecati cupiditate non
+              provident
+            </Typography>
+          </Box>
         </Grid>
         <Grid item md={6}>
           <img
             src="/assets/wallpaper.jpg"
-            width="100%"
+            height="400px"
             style={{
               clipPath: 'url("#myCurve")',
             }}
@@ -58,7 +59,6 @@ const Home = () => {
         )}
       </Stack>
     </Box>
-    // </Box>
   );
 };
 
