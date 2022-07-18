@@ -338,12 +338,14 @@ const AppLayout: FC<AppLayoutProps> = ({ children }) => {
         <Divider />
         <List>
           <NavItem label="Home" to="/" icon={<HomeIcon />} open={open} />
-          <NavItem
-            label="Profile"
-            to="/profile"
-            icon={<PersonIcon />}
-            open={open}
-          />
+          {user && (
+            <NavItem
+              label="Profile"
+              to="/profile"
+              icon={<PersonIcon />}
+              open={open}
+            />
+          )}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1 }}>
